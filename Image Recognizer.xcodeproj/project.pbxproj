@@ -7,21 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D559480F1EEE9C5200B17ABA /* GoogLeNetPlaces.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = D559480E1EEE9C1D00B17ABA /* GoogLeNetPlaces.mlmodel */; };
+		D55948101EEE9C5500B17ABA /* Inceptionv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = D5E40FBD1EEE87A300145FD3 /* Inceptionv3.mlmodel */; };
+		D55948121EEEA45400B17ABA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55948111EEEA45400B17ABA /* Extensions.swift */; };
 		D5E40FA41EEE867E00145FD3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E40FA31EEE867E00145FD3 /* AppDelegate.swift */; };
-		D5E40FA61EEE867E00145FD3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E40FA51EEE867E00145FD3 /* ViewController.swift */; };
-		D5E40FA91EEE867E00145FD3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D5E40FA71EEE867E00145FD3 /* Main.storyboard */; };
 		D5E40FAB1EEE867E00145FD3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D5E40FAA1EEE867E00145FD3 /* Assets.xcassets */; };
 		D5E40FAE1EEE867E00145FD3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D5E40FAC1EEE867E00145FD3 /* LaunchScreen.storyboard */; };
+		D5E40FB81EEE86B500145FD3 /* ImageProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E40FB71EEE86B500145FD3 /* ImageProcessor.swift */; };
+		D5E40FBC1EEE876A00145FD3 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E40FBB1EEE876A00145FD3 /* HomeViewController.swift */; };
+		D5F4AA0F1EF0F3020025D7B0 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F4AA0E1EF0F3020025D7B0 /* Result.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D559480E1EEE9C1D00B17ABA /* GoogLeNetPlaces.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = GoogLeNetPlaces.mlmodel; sourceTree = "<group>"; };
+		D55948111EEEA45400B17ABA /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		D5E40FA01EEE867E00145FD3 /* Image Recognizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Image Recognizer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5E40FA31EEE867E00145FD3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D5E40FA51EEE867E00145FD3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		D5E40FA81EEE867E00145FD3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D5E40FAA1EEE867E00145FD3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D5E40FAD1EEE867E00145FD3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D5E40FAF1EEE867E00145FD3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D5E40FB71EEE86B500145FD3 /* ImageProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImageProcessor.swift; path = Utilities/ImageProcessor.swift; sourceTree = "<group>"; };
+		D5E40FBB1EEE876A00145FD3 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		D5E40FBD1EEE87A300145FD3 /* Inceptionv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Inceptionv3.mlmodel; sourceTree = "<group>"; };
+		D5F4AA0E1EF0F3020025D7B0 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +62,58 @@
 		D5E40FA21EEE867E00145FD3 /* Image Recognizer */ = {
 			isa = PBXGroup;
 			children = (
-				D5E40FA31EEE867E00145FD3 /* AppDelegate.swift */,
-				D5E40FA51EEE867E00145FD3 /* ViewController.swift */,
-				D5E40FA71EEE867E00145FD3 /* Main.storyboard */,
-				D5E40FAA1EEE867E00145FD3 /* Assets.xcassets */,
+				D5E40FB91EEE86C800145FD3 /* App */,
+				D5E40FBA1EEE871E00145FD3 /* Controller */,
+				D5E40FB61EEE86A000145FD3 /* Utilities */,
+				D5E40FB51EEE869600145FD3 /* Model */,
+				D5E40FBE1EEE90F400145FD3 /* Resources */,
 				D5E40FAC1EEE867E00145FD3 /* LaunchScreen.storyboard */,
 				D5E40FAF1EEE867E00145FD3 /* Info.plist */,
 			);
 			path = "Image Recognizer";
+			sourceTree = "<group>";
+		};
+		D5E40FB51EEE869600145FD3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D559480E1EEE9C1D00B17ABA /* GoogLeNetPlaces.mlmodel */,
+				D5E40FBD1EEE87A300145FD3 /* Inceptionv3.mlmodel */,
+				D5F4AA0E1EF0F3020025D7B0 /* Result.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		D5E40FB61EEE86A000145FD3 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				D5E40FB71EEE86B500145FD3 /* ImageProcessor.swift */,
+				D55948111EEEA45400B17ABA /* Extensions.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		D5E40FB91EEE86C800145FD3 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				D5E40FA31EEE867E00145FD3 /* AppDelegate.swift */,
+			);
+			name = App;
+			sourceTree = "<group>";
+		};
+		D5E40FBA1EEE871E00145FD3 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				D5E40FBB1EEE876A00145FD3 /* HomeViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		D5E40FBE1EEE90F400145FD3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D5E40FAA1EEE867E00145FD3 /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -124,7 +176,6 @@
 			files = (
 				D5E40FAE1EEE867E00145FD3 /* LaunchScreen.storyboard in Resources */,
 				D5E40FAB1EEE867E00145FD3 /* Assets.xcassets in Resources */,
-				D5E40FA91EEE867E00145FD3 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,22 +186,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D5E40FA61EEE867E00145FD3 /* ViewController.swift in Sources */,
+				D55948101EEE9C5500B17ABA /* Inceptionv3.mlmodel in Sources */,
+				D55948121EEEA45400B17ABA /* Extensions.swift in Sources */,
+				D5E40FB81EEE86B500145FD3 /* ImageProcessor.swift in Sources */,
 				D5E40FA41EEE867E00145FD3 /* AppDelegate.swift in Sources */,
+				D5F4AA0F1EF0F3020025D7B0 /* Result.swift in Sources */,
+				D5E40FBC1EEE876A00145FD3 /* HomeViewController.swift in Sources */,
+				D559480F1EEE9C5200B17ABA /* GoogLeNetPlaces.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		D5E40FA71EEE867E00145FD3 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				D5E40FA81EEE867E00145FD3 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		D5E40FAC1EEE867E00145FD3 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -312,6 +360,7 @@
 				D5E40FB41EEE867E00145FD3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
