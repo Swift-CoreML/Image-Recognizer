@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Recognition</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -18,8 +20,28 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>GoogleAdsMob</key>
+	<dict>
+		<key>appId</key>
+		<string>${GOOGLE_ADS_MOB_APP_ID}</string>
+		<key>bottomAdsUnit</key>
+		<string>${ADS_UNIT_BOTTOM_ID}</string>
+		<key>fullScreenAdsUnit</key>
+		<string>${ADS_UNIT_FULL_SCREEN_ID}</string>
+	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Please allow to capture image for recognition.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need to access your photo library to save image.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Please allow to browse image for recognition.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -29,8 +51,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
@@ -39,9 +59,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Please allow to browse image for recognition.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Please allow to capture image for recognition.</string>
 </dict>
 </plist>

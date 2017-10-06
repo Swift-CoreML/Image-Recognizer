@@ -7,13 +7,17 @@
 //
 
 import UIKit
-private let resultCellID = "ResultCell"
+import IDMPhotoBrowser
+import DZNEmptyDataSet
+import GoogleMobileAds
+
 class HomeViewController: UIViewController {
-    
+    private let resultCellID = "ResultCell"
     private var placeHolderImage : UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.image = UIImage(named: "placeholder")
+        image.contentMode = .scaleAspectFill
         image.layer.cornerRadius = 5
         image.clipsToBounds = true
         return image
@@ -50,18 +54,51 @@ class HomeViewController: UIViewController {
         return table
     }()
     
-    private let model = Inceptionv3()
+    private var bottomBannerView: GADBannerView = {
+        let banner = GADBannerView(adSize: kGADAdSizeFullBanner)
+        banner.translatesAutoresizingMaskIntoConstraints = false
+        banner.adUnitID = GoogleAdsManager.bottomAdsUnit
+        return banner
+    }()
     
+    private let model = Inceptionv3()
     private var results = ClassResult(headerTitle: "Predicted Results", results: [])
+    //    private let translationLanguages : [Language] = [
+    //        Language(language: "简体中文", code:"zh-CN"),
+    //        Language(language: "中國傳統的", code:"zh-TW"),
+    //        Language(language: "English", code:"en"),
+    //        Language(language: "日本語", code:"ja"),
+    //        Language(language: "ភាសាខ្មែរ", code:"km"),
+    //        Language(language: "한국어", code:"ko")
+    //    ]
+    
+    private let translationLanguages : [Language] = [
+        Language(language: "Chinese(Simplified)", code:"zh-CN"),
+        Language(language: "Chinese(Traditional)", code:"zh-TW"),
+        //Language(language: "English", code:"en"),
+        Language(language: "Japanese", code:"ja"),
+        Language(language: "Khmer", code:"km"),
+        Language(language: "Korean", code:"ko")
+    ]
+    
+    var translationService:TranslationService?
+    // Tracking whether allow viewing photo full screen or not
+    var isAllowedFullScreen = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        translationService = TranslationService()
+        translationService?.delegate = self
+        bottomBannerView.delegate = self
+        
         setupViews()
         
+        resultTableView.emptyDataSetDelegate = self
+        resultTableView.emptyDataSetSource = self
         resultTableView.delegate = self
         resultTableView.dataSource = self
-        
+        resultTableView.tableFooterView = UIView()
         resultTableView.register(UITableViewCell.self, forCellReuseIdentifier: resultCellID)
     }
     
@@ -73,29 +110,49 @@ class HomeViewController: UIViewController {
         
         view.backgroundColor = UIColor.white
         
+        // Add Action
+        let imageTapGesture = UITapGestureRecognizer(target: self, action: #selector(previewImage(sender:)))
+        placeHolderImage.isUserInteractionEnabled = true
+        placeHolderImage.addGestureRecognizer(imageTapGesture)
+        
+        bottomBannerView.rootViewController = self
+        
         view.addSubview(placeHolderImage)
         view.addSubview(browseButton)
         view.addSubview(resultContainerView)
+        view.addSubview(bottomBannerView)
         
-        let views : [String:Any] = ["placeHolderImage" : placeHolderImage, "browseButton" : browseButton, "resultContainerView" : resultContainerView]
+        // Set Up Ads
         let navHeight = navigationController?.navigationBar.frame.height
-        let topHeight = navHeight! + 85
-        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-10-[placeHolderImage]-10-|", options: [], metrics: nil, views: views))
-        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-126-[browseButton]-126-|", options: [], metrics: nil, views: views))
-        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-\(topHeight)-[placeHolderImage(250)]-10-[browseButton(48)]-10-[resultContainerView]-10-|", options: [], metrics: nil, views: views))
+        let topHeight = navHeight! + 30
         
-        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-10-[resultContainerView]-10-|", options: [], metrics: nil, views: views))
+        self.addConstraints(format: "H:|-10-[v0]-10-|", views: placeHolderImage)
+        self.addConstraints(format: "H:|-126-[v0]-126-|", views: browseButton)
+        
+        if #available(iOS 11.0, *){
+            placeHolderImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+            placeHolderImage.heightAnchor.constraint(equalToConstant: 250).isActive = true
+            browseButton.topAnchor.constraint(equalTo: placeHolderImage.bottomAnchor, constant: 10).isActive = true
+            browseButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
+            resultContainerView.topAnchor.constraint(equalTo: browseButton.bottomAnchor, constant: 10).isActive = true
+            bottomBannerView.topAnchor.constraint(equalTo: resultContainerView.bottomAnchor, constant: 10).isActive = true
+            bottomBannerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            bottomBannerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
+        }else{
+            self.addConstraints(format: "V:|-\(topHeight)-[v0(250)]-10-[v1(48)]-10-[v2]-10-[v3(50)]|", views: placeHolderImage, browseButton, resultContainerView, bottomBannerView)
+        }
+        
+        self.addConstraints(format: "H:|-10-[v0]-10-|", views: resultContainerView)
+        self.addConstraints(format: "H:|[v0]|", views: bottomBannerView)
+        self.addConstraints(format: "H:|[v0]|", views: bottomBannerView)
         
         // Result SubViews
-        //resultContainerView.addSubview(resultLabel)
         resultContainerView.addSubview(resultTableView)
         
-        let resultSubViews : [String:Any] = ["resultLabel" : resultLabel, "resultTableView" : resultTableView]
+        self.addConstraints(format: "H:|-0-[v0]-0-|", views: resultTableView)
+        self.addConstraints(format: "V:|-0-[v0]-0-|", views: resultTableView)
         
-        //NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[resultLabel]-0-|", options: [], metrics: nil, views: resultSubViews))
-        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[resultTableView]-0-|", options: [], metrics: nil, views: resultSubViews))
-        
-        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[resultTableView]-0-|", options: [], metrics: nil, views: resultSubViews))
+        self.loadAds(bottomBannerView)
     }
     
     @objc func browseImage(_ sender:UIButton){
@@ -115,10 +172,21 @@ class HomeViewController: UIViewController {
             self.present(imagePicker, animated: true, completion: nil)
         }))
         
+        optionView.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
         self.present(optionView, animated: true, completion: nil)
     }
     
-    func predictionImage(_ image:UIImage){
+    @objc private func previewImage(sender gesture:UITapGestureRecognizer){
+        if isAllowedFullScreen{
+            guard let previewImage = placeHolderImage.image else{ return }
+            let photo = IDMPhoto(image: previewImage)
+            let browser = IDMPhotoBrowser(photos: [photo!], animatedFrom: self.placeHolderImage)
+            self.present(browser!, animated: true, completion: nil)
+        }
+    }
+    
+    private func predictionImage(_ image:UIImage){
         
         // Resize Image to 299 x 224
         guard let resizedImage = ImageProcessor.resizeImage(image) else{
@@ -136,13 +204,16 @@ class HomeViewController: UIViewController {
         }
         
         let results = predicted.classLabel.split(separator: Character.init(","))
-        print("result", results)
         
         self.results.results = []
         for s in results{
             self.results.results.append(s.description)
         }
-        self.resultTableView.reloadData()
+        
+        // Dismiss The loading
+        self.dismissLoading {
+            self.resultTableView.reloadData()
+        }
         
     }
 }
@@ -153,16 +224,34 @@ extension HomeViewController : UIImagePickerControllerDelegate, UINavigationCont
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage{
             
             placeHolderImage.image = pickedImage
+            isAllowedFullScreen = true
             
-            predictionImage(pickedImage)
-            
-            picker.dismiss(animated: true, completion: nil)
-            
+            self.showLoading(message: "Predicting...", actionHandler: {
+                picker.dismiss(animated: true){
+                    self.predictionImage(pickedImage)
+                }
+            })
         }
     }
 }
 
-extension HomeViewController : UITableViewDelegate, UITableViewDataSource{
+extension HomeViewController: UITableViewDelegate, UITableViewDataSource, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate{
+    
+    func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        let text: String = "No Prediction Result"
+        let attributes: [AnyHashable: Any] = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: CGFloat(18.0)), NSAttributedStringKey.foregroundColor: UIColor.darkGray]
+        return NSAttributedString(string: text, attributes: attributes as? [NSAttributedStringKey : Any])
+    }
+    
+    func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        let text: String = "This allows you to transform picture to it's name. It mean that, when you don't know what the picture is, you can do let it done with this 🙂. Click the Browse... button to Get Started."
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.lineBreakMode = .byWordWrapping
+        paragraph.alignment = .center
+        let attributes: [AnyHashable: Any] = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: CGFloat(14.0)), NSAttributedStringKey.foregroundColor: UIColor.lightGray, NSAttributedStringKey.paragraphStyle: paragraph]
+        return NSAttributedString(string: text, attributes: attributes as? [NSAttributedStringKey : Any])
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -179,6 +268,76 @@ extension HomeViewController : UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return results.headerTitle
+        if results.results.count > 0{
+            return results.headerTitle
+        }
+        return ""
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let word = results.results[indexPath.row]
+        
+        let optionView = UIAlertController(title: "Choose what you want to perform.", message: "", preferredStyle: .actionSheet)
+        // Translate using google translate
+        optionView.addAction(UIAlertAction(title: "Translate", style: .default, handler: { action in
+            
+            let translationOption = UIAlertController(title: "Choose language you want to translate.", message: "", preferredStyle: .actionSheet)
+            
+            for lang in self.translationLanguages{
+                translationOption.addAction(UIAlertAction(title: lang.language, style: .default, handler: { (action) in
+                    // Show Indicator
+                    self.showLoading(message: "Translating", actionHandler: {
+                        self.translationService?.translate(q: word, target: lang.code)
+                    })
+                    
+                }))
+            }
+            
+            translationOption.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            self.present(translationOption, animated: true, completion: nil)
+        }))
+        // Search with Google
+        optionView.addAction(UIAlertAction(title: "Search with Google", style: .default, handler: { action in
+            let vc = WebViewController()
+            vc.wordToSearch = word
+            self.navigationController?.pushViewController(vc, animated: true)
+        }))
+        
+        optionView.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(optionView, animated: true, completion: nil)
+    }
+}
+
+extension HomeViewController : TranslationServiceDelegate{
+    
+    func responseTranslatedResult(_ results: [TranslatedResult]) {
+        // Stop Indicator
+        self.dismissLoading {
+            let vc = TranslatedViewController()
+            vc.results = results
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+    
+    func translationFail(_ message: String) {
+        let alert = UIAlertController(title: "Message", message: message, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+}
+
+extension HomeViewController : GADBannerViewDelegate{
+    
+    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+        bottomBannerView.alpha = 0
+        UIView.animate(withDuration: 1, animations: {
+            self.bottomBannerView.alpha = 1
+        })
+    }
+    
+    func adViewWillPresentScreen(_ bannerView: GADBannerView) {
+        print("adViewWillPresentScreen")
     }
 }

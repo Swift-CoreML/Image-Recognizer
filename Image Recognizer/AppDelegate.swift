@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GoogleMobileAds
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,9 +17,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
+        // Initialize the Google Mobile Ads SDK.
+        GADMobileAds.configure(withApplicationID: GoogleAdsManager.adsMobAppId)
+        
         let vc = HomeViewController()
         let nav = UINavigationController(rootViewController: vc)
-        //nav.navigationBar.barTintColor = UIColor.red
+        //nav.navigationBar.barTintColor = UIColor(named: "appMainColor")
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = nav
         window?.makeKeyAndVisible()
